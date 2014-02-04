@@ -1,13 +1,29 @@
 #!/usr/bin/ruby
 file = File.read('file.txt')
-array = file.split(' ')
-#puts array
+words = file.split(' ')
 
-uniqueWords = []
-array.each do |word|
-	if not uniqueWords.include?(word.downcase)
-		uniqueWords.push(word.downcase)
+# normalize capitalization and remove punctuation
+# put each word on its own line
+normalized = []
+words.each do |word|
+	normalizedWord = word.downcase.gsub(/[^a-z]/, "\n")
+	normalized.push(normalizedWord)
+end
+
+sorted = normalized.sort
+
+# Increase count if current word is same as previous word
+# This is true because of sorting alphabetically
+counts = []
+count = 1
+sorted.each_with_index do |word, i|
+	if (i > 0) and (word == sorted[i - 1])
+		count += 1
+	elsif (i > 0) and word != sorted[i - 1] 
+		counts.push([sorted[i - 1], count])
+		count = 1
 	end
 end
 
-puts uniqueWords
+puts "\nHere is the final list"
+puts counts
