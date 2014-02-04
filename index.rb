@@ -44,13 +44,18 @@ def addTokensToIndex(index, document, tokens)
 	return index
 end
 
-files = ['file.txt', 'file2.txt']
-invertedIndex = {}
-files.each_with_index do |filename, i|
-	file = File.read(filename)
-	tokens = getTokens(file).sort
-	uniqueTokens = removeDuplicates(tokens)
-	invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
-end
+if ARGV.length < 1
+	puts "Enter the files you want to index separated by spaces."
+	puts "Ensure all files are in the same directory as this script."
+else
+	files = ARGV
+	invertedIndex = {}
+	files.each_with_index do |filename, i|
+		file = File.read(filename)
+		tokens = getTokens(file).sort
+		uniqueTokens = removeDuplicates(tokens)
+		invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
+	end
 
-puts invertedIndex
+	puts invertedIndex
+end
