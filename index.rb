@@ -7,7 +7,12 @@ words = file.split(' ')
 normalized = []
 words.each do |word|
 	normalizedWord = word.downcase.gsub(/[^a-z]/, "\n")
-	normalized.push(normalizedWord)
+	
+	# could contain a newline inside the word
+	multiples = normalizedWord.split("\n")
+	multiples.each do |m|
+		normalized.push(m)
+	end
 end
 
 sorted = normalized.sort
