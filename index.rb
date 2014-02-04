@@ -18,28 +18,39 @@ def getTokens(file)
 	return normalized
 end
 
-def getCount(tokenList)
-	# Increase count if current word is same as previous word
-	# This is true because of sorting alphabetically
-	counts = []
-	count = 1
-	tokenList.each_with_index do |word, i|
-		if (i > 0) and (word == tokenList[i - 1])
-			count += 1
-		elsif (i > 0) and word != tokenList[i - 1] 
-			counts.push([tokenList[i - 1], count])
-			count = 1
+def removeDuplicates(tokens)
+	uniqueTokens = []
+	tokens.each do |token|
+		if not uniqueTokens.include?(token)
+			uniqueTokens.push(token)
 		end
 	end
-	return counts
+	return uniqueTokens
+end
+
+def addTokensToIndex(index, document, tokens)
+	tokens.each do |token|
+		if not index.has_key?(token)
+			# create listing in index
+			index[token] = [document]
+		else
+			# append document to current token listing
+			prevValue = index[token]
+			appendedValue = prevValue.push(document)
+			index[token] = appendedValue
+		end
+	end
+
+	return index
 end
 
 files = ['file.txt', 'file2.txt']
-files.each do |filename|
+invertedIndex = {}
+files.each_with_index do |filename, i|
 	file = File.read(filename)
 	tokens = getTokens(file).sort
-	withCount = getCount(tokens)
-	puts "#{filename}: "
-	puts withCount
-	puts "\n\n"
+	uniqueTokens = removeDuplicates(tokens)
+	invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
 end
+
+puts invertedIndex
