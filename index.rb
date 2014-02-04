@@ -1,4 +1,10 @@
 #!/usr/bin/ruby
+#
+# Anthony Elliott
+# Information Storage and Retrieval
+# CS 3150
+# Programming Assignment 1
+# 2/3/2014
 
 def getTokens(file)
 	words = file.split(' ')
@@ -46,7 +52,6 @@ end
 
 if ARGV.length < 1
 	puts "Enter the files you want to index separated by spaces."
-	puts "Ensure all files are in the same directory as this script."
 else
 	files = ARGV
 	invertedIndex = {}
