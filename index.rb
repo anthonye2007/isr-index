@@ -52,6 +52,7 @@ end
 
 if ARGV.length < 1
 	puts "Enter the files you want to index separated by spaces."
+	puts "Wildcards are acceptable."
 else
 	files = ARGV
 	invertedIndex = {}
@@ -62,5 +63,17 @@ else
 		invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
 	end
 
-	puts invertedIndex
+	puts "# INVERTED INDEX RESULTS"
+
+	keys = invertedIndex.keys.sort
+	keys.each do |key|
+		documents = invertedIndex[key]
+		str = key + "\t" + documents.length.to_s
+
+		documents.each do |doc|
+			str += "\t" + doc.to_s
+		end
+
+		puts str
+	end
 end
