@@ -63,8 +63,12 @@ else
 		invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
 	end
 
-	puts "# INVERTED INDEX RESULTS"
+	puts "# INPUT DOCUMENT REFERENCE LEGEND"
+	files.each_with_index do |file, i|
+		puts (i+1).to_s + "\t" + file
+	end
 
+	puts "# INVERTED INDEX RESULTS"
 	keys = invertedIndex.keys.sort
 	keys.each do |key|
 		documents = invertedIndex[key]
