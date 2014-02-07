@@ -53,14 +53,20 @@ end
 if ARGV.length < 1
 	puts "Enter the files you want to index separated by spaces."
 	puts "Wildcards are acceptable."
+	puts "Example:  ./index.rb /first/path /second/file"
 else
 	files = ARGV
 	invertedIndex = {}
-	files.each_with_index do |filename, i|
-		file = File.read(filename)
-		tokens = getTokens(file).sort
-		uniqueTokens = removeDuplicates(tokens)
-		invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
+	begin
+		files.each_with_index do |filename, i|
+			file = File.read(filename)
+			tokens = getTokens(file).sort
+			uniqueTokens = removeDuplicates(tokens)
+			invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
+	end
+	rescue
+		puts "Enter the files you want to index separated by spaces."
+		puts "Example:  ./index.rb /first/path /second/file"
 	end
 
 	output = File.open("document.idx", "w")
@@ -87,6 +93,5 @@ else
 end
 
 # TODO
-# need to catch errors from files and output usage statement
 # add some logic comments
 # test on storm
