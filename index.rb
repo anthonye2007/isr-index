@@ -63,12 +63,14 @@ else
 		invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
 	end
 
-	puts "# INPUT DOCUMENT REFERENCE LEGEND"
+	output = File.open("document.idx", "w")
+
+	output << "# INPUT DOCUMENT REFERENCE LEGEND\n"
 	files.each_with_index do |file, i|
-		puts (i+1).to_s + "\t" + file
+		output << (i+1).to_s + "\t" + file + "\n"
 	end
 
-	puts "# INVERTED INDEX RESULTS"
+	output << "# INVERTED INDEX RESULTS\n"
 	keys = invertedIndex.keys.sort
 	keys.each do |key|
 		documents = invertedIndex[key]
@@ -78,6 +80,13 @@ else
 			str += "\t" + doc.to_s
 		end
 
-		puts str
+		output << str + "\n"
 	end
+
+	output.close
 end
+
+# TODO
+# need to catch errors from files and output usage statement
+# add some logic comments
+# test on storm
