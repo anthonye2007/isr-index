@@ -58,6 +58,7 @@ else
 	files = ARGV
 	invertedIndex = {}
 	begin
+		# Read in words from each file
 		files.each_with_index do |filename, i|
 			file = File.read(filename)
 			tokens = getTokens(file).sort
@@ -71,11 +72,13 @@ else
 
 	output = File.open("document.idx", "w")
 
+	# output list of files indexed
 	output << "# INPUT DOCUMENT REFERENCE LEGEND\n"
 	files.each_with_index do |file, i|
 		output << (i+1).to_s + "\t" + file + "\n"
 	end
 
+	# output contents of inverted index
 	output << "# INVERTED INDEX RESULTS\n"
 	keys = invertedIndex.keys.sort
 	keys.each do |key|
@@ -91,7 +94,3 @@ else
 
 	output.close
 end
-
-# TODO
-# add some logic comments
-# test on storm
