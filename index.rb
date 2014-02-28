@@ -11,11 +11,16 @@ def driver()
 		printUsage
 	else
 		invertedIndex = generateInvertedIndex
-		outputIndexToFile(invertedIndex)
+		positionalIndex = generatePositionalIndex(invertedIndex)
+		outputInvertedIndex(invertedIndex)
 	end
 end
 
-def outputIndexToFile(invertedIndex)
+def generatePositionalIndex(index)
+
+end
+
+def outputInvertedIndex(invertedIndex)
 	files = ARGV
 	output = File.open("document.idx", "w")
 
@@ -100,10 +105,7 @@ def addTokensToIndex(index, document, tokens)
 			# create listing in index
 			index[token] = [document]
 		else
-			# append document to current token listing
-			prevValue = index[token]
-			appendedValue = prevValue.push(document)
-			index[token] = appendedValue
+			index[token].push document
 		end
 	end
 
