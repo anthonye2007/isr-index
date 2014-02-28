@@ -22,6 +22,8 @@ def generatePositionalIndex(invertedIndex, files)
 	# use token -> Document
 	index = PositionalIndex.new
 
+	puts "Files: " + files.to_s + "\n"
+
 	invertedIndex.keys.each do |token|
 		# get token and document
 		# normalize document (getTokens)
@@ -29,7 +31,8 @@ def generatePositionalIndex(invertedIndex, files)
 		# add postings list
 		documents = invertedIndex[token]
 		documents.each do |docNum|
-			normalizedDocument = getTokens(files[docNum-1])
+			file = File.read(files[docNum-1])
+			normalizedDocument = getTokens(file)
 			postings = getPostings(normalizedDocument, token)
 			index.addListing(token, docNum, postings)
 		end
@@ -42,7 +45,7 @@ def getPostings(words, token)
 	postings = []
 
 	words.each_with_index do |word, i|
-		postings.push i if token == word
+		postings.push i if token.eql? word
 	end
 
 	return postings
