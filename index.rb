@@ -3,8 +3,68 @@
 # Anthony Elliott
 # Information Storage and Retrieval
 # CS 3150
-# Programming Assignment 1
-# 2/3/2014
+# Programming Assignment 2
+# 2/28/2014
+
+def driver()
+	if ARGV.length < 1
+		printUsage
+	else
+		invertedIndex = generateInvertedIndex
+		outputIndexToFile(invertedIndex)
+	end
+end
+
+def outputIndexToFile(invertedIndex)
+	files = ARGV
+	output = File.open("document.idx", "w")
+
+	# output list of files indexed
+	output << "# INPUT DOCUMENT REFERENCE LEGEND\n"
+	files.each_with_index do |file, i|
+		output << (i+1).to_s + "\t" + file + "\n"
+	end
+
+	# output contents of inverted index
+	output << "# INVERTED INDEX RESULTS\n"
+	keys = invertedIndex.keys.sort
+	keys.each do |key|
+		documents = invertedIndex[key]
+		str = key + "\t" + documents.length.to_s
+
+		documents.each do |doc|
+			str += "\t" + doc.to_s
+		end
+
+		output << str + "\n"
+	end
+
+	output.close	
+end
+
+def generateInvertedIndex
+	files = ARGV
+	invertedIndex = {}
+	begin
+		# Read in words from each file
+		files.each_with_index do |filename, i|
+			file = File.read(filename)
+			tokens = getTokens(file).sort
+			uniqueTokens = removeDuplicates(tokens)
+			invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
+		end
+	rescue
+		printUsage
+	end
+
+	return invertedIndex
+end
+
+def printUsage
+	puts "Enter the files you want to index separated by spaces."
+	puts "Wildcards are acceptable."
+	puts "Example:  ./index.rb /first/path /second/file"
+end	
 
 def getTokens(file)
 	words = file.split(' ')
@@ -50,47 +110,4 @@ def addTokensToIndex(index, document, tokens)
 	return index
 end
 
-if ARGV.length < 1
-	puts "Enter the files you want to index separated by spaces."
-	puts "Wildcards are acceptable."
-	puts "Example:  ./index.rb /first/path /second/file"
-else
-	files = ARGV
-	invertedIndex = {}
-	begin
-		# Read in words from each file
-		files.each_with_index do |filename, i|
-			file = File.read(filename)
-			tokens = getTokens(file).sort
-			uniqueTokens = removeDuplicates(tokens)
-			invertedIndex = addTokensToIndex(invertedIndex, i+1, uniqueTokens)
-	end
-	rescue
-		puts "Enter the files you want to index separated by spaces."
-		puts "Example:  ./index.rb /first/path /second/file"
-	end
-
-	output = File.open("document.idx", "w")
-
-	# output list of files indexed
-	output << "# INPUT DOCUMENT REFERENCE LEGEND\n"
-	files.each_with_index do |file, i|
-		output << (i+1).to_s + "\t" + file + "\n"
-	end
-
-	# output contents of inverted index
-	output << "# INVERTED INDEX RESULTS\n"
-	keys = invertedIndex.keys.sort
-	keys.each do |key|
-		documents = invertedIndex[key]
-		str = key + "\t" + documents.length.to_s
-
-		documents.each do |doc|
-			str += "\t" + doc.to_s
-		end
-
-		output << str + "\n"
-	end
-
-	output.close
-end
+driver()
