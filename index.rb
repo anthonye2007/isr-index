@@ -6,28 +6,60 @@
 # Programming Assignment 2
 # 2/28/2014
 
-def driver()
+def driver
 	if ARGV.length < 1
 		printUsage
 	else
 		invertedIndex = generateInvertedIndex
-		positionalIndex = generatePositionalIndex(invertedIndex)
-		outputInvertedIndex(invertedIndex)
+		positionalIndex = generatePositionalIndex(invertedIndex, ARGV)
+		puts positionalIndex.to_s
 	end
 end
 
-def generatePositionalIndex(invertedIndex)
-	# have token -> docNum
+def generatePositionalIndex(invertedIndex, files)
+	# have token -> [docNum]
 	# need token -> docNum -> postings
 	# use token -> Document
 	index = PositionalIndex.new
-	
 
+	invertedIndex.keys.each do |token|
+		# get token and document
+		# normalize document (getTokens)
+		# search document for all occurrences of token
+		# add postings list
+		documents = invertedIndex[token]
+		documents.each do |docNum|
+			normalizedDocument = getTokens(files[docNum-1])
+			postings = getPostings(normalizedDocument, token)
+			index.addListing(token, docNum, postings)
+		end
+	end
+
+	return index
 end
+
+def getPostings(words, token)
+	postings = []
+
+	words.each_with_index do |word, i|
+		postings.push i if token == word
+	end
+
+	return postings
+end	
+
+def outputPositionalIndex(index)
+
+	tokens = index.keys.sort
+	tokens.each do |token|
+		puts token + ": \t" + index[token].to_s
+	end
+end
+
 
 def outputInvertedIndex(invertedIndex)
 	files = ARGV
-	output = File.open("document.idx", "w")
+	output = File.open("document.pidx", "w")
 
 	# output list of files indexed
 	output << "# INPUT DOCUMENT REFERENCE LEGEND\n"
@@ -70,6 +102,19 @@ def generateInvertedIndex
 	return invertedIndex
 end
 
+def addTokensToIndex(index, document, tokens)
+	tokens.each do |token|
+		if not index.has_key?(token)
+			# create listing in index
+			index[token] = [document]
+		else
+			index[token].push document
+		end
+	end
+
+	return index
+end
+
 def printUsage
 	puts "Enter the files you want to index separated by spaces."
 	puts "Wildcards are acceptable."
@@ -104,24 +149,11 @@ def removeDuplicates(tokens)
 	return uniqueTokens
 end
 
-def addTokensToIndex(index, document, tokens)
-	tokens.each do |token|
-		if not index.has_key?(token)
-			# create listing in index
-			index[token] = [document]
-		else
-			index[token].push document
-		end
-	end
-
-	return index
-end
-
 class PositionalIndex
 	def initialize
 		@index = {}
 	end
-	def addListing(token, doc)
+	def addDocument(token, doc)
 		if @index.has_key? token
 			@index[token].push doc
 		else
@@ -130,7 +162,21 @@ class PositionalIndex
 	end
 	def addListing(token, docNum, postings)
 		doc = Document.new(docNum, postings)
-		addListing(token, doc)
+		addDocument(token, doc)
+	end
+	def to_s
+		tokens = @index.keys.sort
+
+		str = ""
+		tokens.each do |token|
+			str += token + ": \t"
+			documents = @index[token]
+			documents.each do |document|
+				str += document.to_s + "\n"
+			end
+		end
+
+		return str
 	end
 end
 
@@ -139,11 +185,8 @@ class Document
 		@num = docNum
 		@postings = postings
 	end
-	def num
-		return @num
-	end
-	def postings
-		return @postings
+	def to_s
+		return @num.to_s + ": \t" + @postings.to_s
 	end
 end
 
