@@ -16,7 +16,12 @@ def driver()
 	end
 end
 
-def generatePositionalIndex(index)
+def generatePositionalIndex(invertedIndex)
+	# have token -> docNum
+	# need token -> docNum -> postings
+	# use token -> Document
+	index = PositionalIndex.new
+	
 
 end
 
@@ -110,6 +115,36 @@ def addTokensToIndex(index, document, tokens)
 	end
 
 	return index
+end
+
+class PositionalIndex
+	def initialize
+		@index = {}
+	end
+	def addListing(token, doc)
+		if @index.has_key? token
+			@index[token].push doc
+		else
+			@index[token] = [doc]
+		end
+	end
+	def addListing(token, docNum, postings)
+		doc = Document.new(docNum, postings)
+		addListing(token, doc)
+	end
+end
+
+class Document
+	def initialize(docNum, postings)
+		@num = docNum
+		@postings = postings
+	end
+	def num
+		return @num
+	end
+	def postings
+		return @postings
+	end
 end
 
 driver()
