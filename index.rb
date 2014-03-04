@@ -172,11 +172,12 @@ class PositionalIndex
 
 		str = ""
 		tokens.each do |token|
-			str += token + ": \t"
+			str += token + ":"
 			documents = @index[token]
 			documents.each do |document|
-				str += document.to_s + "\n"
+				str += "\t" + document.to_s
 			end
+			str += "\n"
 		end
 
 		return str
