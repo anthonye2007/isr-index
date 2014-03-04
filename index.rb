@@ -12,7 +12,8 @@ def driver
 	else
 		invertedIndex = generateInvertedIndex
 		positionalIndex = generatePositionalIndex(invertedIndex, ARGV)
-		puts positionalIndex.to_s
+		#puts positionalIndex.to_s
+		outputPositionalIndex(positionalIndex)
 	end
 end
 
@@ -22,7 +23,7 @@ def generatePositionalIndex(invertedIndex, files)
 	# use token -> Document
 	index = PositionalIndex.new
 
-	puts "Files: " + files.to_s + "\n"
+	#puts "Files: " + files.to_s + "\n"
 
 	invertedIndex.keys.each do |token|
 		# get token and document
@@ -52,11 +53,11 @@ def getPostings(words, token)
 end	
 
 def outputPositionalIndex(index)
+	output = File.open("document.pidx", "w")
 
-	tokens = index.keys.sort
-	tokens.each do |token|
-		puts token + ": \t" + index[token].to_s
-	end
+	output << index.to_s
+
+	output.close
 end
 
 
@@ -189,8 +190,16 @@ class Document
 		@num = docNum
 		@postings = postings
 	end
+	def printPostings
+		str = ""
+		@postings.each_with_index do |posting, i|
+			str += "," if i > 0
+			str += posting.to_s
+		end
+		return str
+	end
 	def to_s
-		return "    " + @num.to_s + "," + @postings.length.to_s + ": " + @postings.to_s
+		return "    " + @num.to_s + "," + @postings.length.to_s + ": " + printPostings
 	end
 end
 
