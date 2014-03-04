@@ -172,11 +172,12 @@ class PositionalIndex
 
 		str = ""
 		tokens.each do |token|
-			str += token + ": \t"
 			documents = @index[token]
+			str += token + "," + documents.length.to_s + ":"
 			documents.each do |document|
-				str += document.to_s + "\n"
+				str += "\n" + document.to_s
 			end
+			str += "\n\n"
 		end
 
 		return str
@@ -189,7 +190,7 @@ class Document
 		@postings = postings
 	end
 	def to_s
-		return @num.to_s + ": \t" + @postings.to_s
+		return "    " + @num.to_s + "," + @postings.length.to_s + ": " + @postings.to_s
 	end
 end
 
